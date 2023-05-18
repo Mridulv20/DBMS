@@ -37,3 +37,148 @@ SELECT AVG(Age) AS AverageAge FROM Employees;
 
 -- Query 8: Retrieve the oldest employee
 SELECT * FROM Employees ORDER BY Age DESC LIMIT 1;
+-- Query 9: Retrieve employees whose names start with 'J'
+SELECT * FROM Employees WHERE Name LIKE 'J%';
+
+-- Query 10: Retrieve employees sorted by department and age in descending order
+SELECT * FROM Employees ORDER BY Department ASC, Age DESC;
+
+-- Query 11: Calculate the maximum age among employees
+SELECT MAX(Age) AS MaximumAge FROM Employees;
+
+-- Query 12: Retrieve employees in the Marketing or IT departments
+SELECT * FROM Employees WHERE Department IN ('Marketing', 'IT');
+
+-- Query 13: Update the department of employee with ID 4 to 'Administration'
+UPDATE Employees SET Department = 'Administration' WHERE ID = 4;
+
+-- Query 14: Delete all employees older than 45
+DELETE FROM Employees WHERE Age > 45;
+
+-- Query 15: Retrieve employees with their names and department in uppercase
+SELECT UPPER(Name) AS Name, UPPER(Department) AS Department FROM Employees;
+
+-- Query 16: Calculate the total number of employees in each department
+SELECT Department, COUNT(*) AS EmployeeCount FROM Employees GROUP BY Department;
+
+-- Query 17: Retrieve employees with their names in reverse order
+SELECT REVERSE(Name) AS ReverseName FROM Employees;
+
+-- Query 18: Retrieve employees with their names and department concatenated
+SELECT CONCAT(Name, ' - ', Department) AS EmployeeInfo FROM Employees;
+
+-- Query 19: Calculate the average age of employees in the Sales department
+SELECT AVG(Age) AS AverageAgeSales FROM Employees WHERE Department = 'Sales';
+
+-- Query 20: Retrieve the youngest and oldest employees
+SELECT * FROM Employees WHERE Age = (SELECT MIN(Age) FROM Employees)
+UNION
+SELECT * FROM Employees WHERE Age = (SELECT MAX(Age) FROM Employees);
+
+
+
+
+
+
+
+-- Create a new table
+CREATE TABLE Departments (
+  ID INT PRIMARY KEY,
+  Name VARCHAR(50),
+  Location VARCHAR(50)
+);
+
+-- Insert data into the Departments table
+INSERT INTO Departments (ID, Name, Location)
+VALUES (1, 'Sales', 'New York'),
+       (2, 'Marketing', 'Los Angeles'),
+       (3, 'Finance', 'Chicago'),
+       (4, 'IT', 'San Francisco'),
+       (5, 'HR', 'Dallas');
+
+-- Query 1: Retrieve all employees along with their department information
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+JOIN Departments ON Employees.Department = Departments.Name;
+
+-- Query 2: Retrieve employees in the Sales department with their department location
+SELECT Employees.*, Departments.Location
+FROM Employees
+JOIN Departments ON Employees.Department = Departments.Name
+WHERE Employees.Department = 'Sales';
+
+-- Query 3: Retrieve employees and their department information, including employees without a department
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+LEFT JOIN Departments ON Employees.Department = Departments.Name;
+
+-- Query 4: Retrieve employees and their corresponding department information, including departments without employees
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Departments
+LEFT JOIN Employees ON Employees.Department = Departments.Name;
+
+-- Query 5: Retrieve employees along with their department information, excluding employees without a department
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+INNER JOIN Departments ON Employees.Department = Departments.Name;
+
+-- Query 6: Retrieve employees who have a department and their corresponding department information
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Departments
+INNER JOIN Employees ON Employees.Department = Departments.Name;
+
+-- Query 7: Retrieve employees and their department information, including all departments even without employees
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+FULL JOIN Departments ON Employees.Department = Departments.Name;
+-- Query 8: Retrieve employees and their department information, excluding the IT department
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+JOIN Departments ON Employees.Department = Departments.Name
+WHERE Departments.Name <> 'IT';
+
+-- Query 9: Retrieve employees and their department information, including employees and departments that have no match
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+LEFT JOIN Departments ON Employees.Department = Departments.Name
+UNION
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+RIGHT JOIN Departments ON Employees.Department = Departments.Name
+WHERE Employees.Department IS NULL;
+
+-- Query 10: Retrieve employees and their department information, including a placeholder for employees without a department
+SELECT Employees.*, COALESCE(Departments.Name, 'No Department') AS DepartmentName, Departments.Location
+FROM Employees
+LEFT JOIN Departments ON Employees.Department = Departments.Name;
+
+-- Query 11: Retrieve employees and their department information, including only the departments that have employees
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+RIGHT JOIN Departments ON Employees.Department = Departments.Name;
+
+-- Query 12: Retrieve employees and their department information, including only the employees and departments that have a match
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+INNER JOIN Departments ON Employees.Department = Departments.Name;
+
+-- Query 13: Retrieve employees and their department information, excluding the employees without a department and departments without employees
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+INNER JOIN Departments ON Employees.Department = Departments.Name
+WHERE Employees.Department IS NOT NULL;
+
+-- Query 14: Retrieve employees and their department information, including departments without employees
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+LEFT JOIN Departments ON Employees.Department = Departments.Name
+UNION ALL
+SELECT NULL AS ID, NULL AS Name, NULL AS Age, Departments.Name AS DepartmentName, Departments.Location
+FROM Departments
+WHERE Departments.Name NOT IN (SELECT DISTINCT Department FROM Employees);
+
+-- Query 15: Retrieve employees and their department information, including employees without a department and departments without employees
+SELECT Employees.*, Departments.Name AS DepartmentName, Departments.Location
+FROM Employees
+FULL JOIN Departments ON Employees.Department = Departments.Name;
+
